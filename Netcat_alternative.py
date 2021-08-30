@@ -30,7 +30,46 @@ def usage():
   print "bhpnet.py -t 192.168.0.1 -p 5555 -l -e=\"cat /etc/passwd\""
   print "echo 'ABCDEFGHI' | ./bhpnet.py -t 192.168.11.12 -p 135"
   sys.exit(0)
-
+  
+  
+  
+def client_sender(buffer):
+  client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  try:
+    # connect to our target host
+    client.connect((target,port))
+    
+    # setting up our TCP socket object and then test to see if we have received any input from stdin
+    if len(buffer):
+      client.send(buffer)
+    while True:
+      # now wait for data back
+      recv_len = 1
+      response = ""
+      
+    # If all is well, we ship the data off to the remote target and receive back data until there is no more data to receive
+      while recv_len:
+        data = client.recv(4096)
+        recv_len = len(data)
+        if recv_len < 4096:
+          break
+      print response,
+      
+      # We then wait for further input from the user and continue sending and receiving data until the user kills the script
+      buffer = raw_input("")
+      buffer += "\n"
+      
+      # send it off
+      client.send(buffer)
+      
+  except:
+    print "[*] Exception! Exiting."
+    # tear down the connection
+    client.close()
+      
+  
+  
+  
 def main():
   global listen
   global port
